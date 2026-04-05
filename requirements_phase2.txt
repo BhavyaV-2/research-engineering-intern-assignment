@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+duckdb
+scikit-learn
+networkx
+numpy
+sentence-transformers
+google-genai
+pydantic
+pytest
+httpx
