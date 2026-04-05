@@ -103,8 +103,6 @@ Open: http://localhost:3000
 python -m pytest -q
 ```
 
-(If you have `test_edge_cases.py`, mention what it covers here.)
-
 ---
 
 ## Tech Stack
