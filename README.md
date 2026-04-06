@@ -13,7 +13,7 @@ An investigative OSINT-style dashboard for mapping manufactured polarization on 
 
 ## Live Deployments
 
-- **Frontend (Vercel):** https://research-engineering-intern-assignment-3ou01mrw0.vercel.app  
+- **Frontend (Vercel):** https://research-engineering-intern-assignm-iota.vercel.app/  
 - **Backend API (Hugging Face Space):** https://bhavyav2-arbiter-api.hf.space  
 - **Backend Swagger (Docs):** https://bhavyav2-arbiter-api.hf.space/docs  
 - **Demo video (3 min):** https://www.loom.com/share/b02f3d81dd1c421e917cf1b96aa89f37
