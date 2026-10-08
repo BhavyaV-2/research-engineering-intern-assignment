@@ -57,6 +57,8 @@ async def search(query: str, limit: int = 20):
     query_emb = model.encode([query])[0]
     
     res = db.execute("SELECT id, title, subreddit, author, created_utc, bot_suspicion_score, embedding FROM dataset").df()
+    if len(res) == 0:
+        return []
     embeddings = np.stack(res['embedding'].values)
     
     query_norm = np.linalg.norm(query_emb)
@@ -70,32 +72,31 @@ async def search(query: str, limit: int = 20):
     
     res_sorted = res.sort_values('similarity_score', ascending=False)
     
-    if len(res_sorted) > 0:
-        top_score = res_sorted.iloc[0]['similarity_score']
-        if top_score < 0.35:
-            try:
-                client = get_next_gemini_client(app)
-                prompt = f"The user searched for '{query}' in a political dataset, but no matches were found. Suggest 3 valid, alternative US political search queries (e.g., 'border policy', 'inflation', 'foreign relations'). Return ONLY a JSON array of 3 strings."
-                response = client.models.generate_content(
-                    model='gemini-2.5-flash', 
-                    contents=prompt
-                )
-                raw_text = response.text.strip()
-                if raw_text.startswith("```json"):
-                    raw_text = raw_text[7:-3]
-                elif raw_text.startswith("```"):
-                    raw_text = raw_text[3:-3]
-                
-                suggestions = json.loads(raw_text)
-            except Exception as e:
-                logging.error(f"Gemini API Error: {e}")
-                suggestions = ['border policy', 'inflation', 'foreign relations']
-                
-            return {
-                "status": "404_SEMANTIC",
-                "message": "No highly relevant posts found.",
-                "suggestions": suggestions
-            }
+    top_score = res_sorted.iloc[0]['similarity_score']
+    if top_score < 0.35:
+        try:
+            client = get_next_gemini_client(app)
+            prompt = f"The user searched for '{query}' in a political dataset, but no matches were found. Suggest 3 valid, alternative US political search queries (e.g., 'border policy', 'inflation', 'foreign relations'). Return ONLY a JSON array of 3 strings."
+            response = client.models.generate_content(
+                model='gemini-2.5-flash', 
+                contents=prompt
+            )
+            raw_text = response.text.strip()
+            if raw_text.startswith("```json"):
+                raw_text = raw_text[7:-3]
+            elif raw_text.startswith("```"):
+                raw_text = raw_text[3:-3]
+            
+            suggestions = json.loads(raw_text)
+        except Exception as e:
+            logging.error(f"Gemini API Error: {e}")
+            suggestions = ['border policy', 'inflation', 'foreign relations']
+            
+        return {
+            "status": "404_SEMANTIC",
+            "message": "No highly relevant posts found.",
+            "suggestions": suggestions
+        }
             
     top_matches = res_sorted.head(limit).drop(columns=['embedding'])
     return top_matches.to_dict(orient='records')

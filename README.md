@@ -100,8 +100,12 @@ Open: http://localhost:3000
 ## Testing
 
 ```bash
-python -m pytest -q
+pytest
 ```
+
+Coverage reports are generated on each run:
+- `coverage.xml`
+- `htmlcov/index.html`
 
 ---
 

@@ -9,3 +9,5 @@ google-genai
 pydantic
 pytest
 httpx
+pytest-cov
+python-dotenv
