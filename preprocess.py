@@ -128,5 +128,5 @@ def main():
     df.to_parquet(output_file, engine='pyarrow')
     logging.info("Pipeline completely executed.")
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()
